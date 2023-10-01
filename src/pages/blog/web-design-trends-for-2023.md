@@ -1,9 +1,9 @@
 ---
 layout: '../../layouts/Post.astro'
-title: Web Design Trends for 2023
-image: /images/web-design
+title: Attacking O365 Methodology
+image: '/images/hydra'
 publishedAt: 2022-09-03
-category: 'Resources'
+category: 'Cloud'
 ---
 
 ## Heading 2

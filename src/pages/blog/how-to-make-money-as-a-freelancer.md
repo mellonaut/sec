@@ -1,14 +1,15 @@
 ---
 layout: '../../layouts/Post.astro'
-title: How to Make Money as a Freelancer
-image: /images/freelance
-publishedAt: "2021-01-01"
-category: 'Freelance'
+title: 'Attacking Active Directory Methodology'
+image: '/images/kerberos2'
+# image: 'https://22863376c5.clvaw-cdnwnd.com/2c46b638ae8400165ec727f2390cd862/200000109-4dacc4dacf/0_0k6y3ytGb8Fjtrnr.webp?ph=22863376c5'
+publishedAt: "2023-10-1"
+category: 'AD'
 ---
 
-## Heading 2
+## Overview
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Eget gravida cum sociis natoque penatibus et magnis dis. Posuere morbi leo urna molestie at elementum eu facilisis sed. Lectus nulla at volutpat diam. Pharetra magna ac placerat vestibulum lectus. Turpis massa tincidunt dui ut ornare lectus sit amet. Pretium vulputate sapien nec sagittis. Mollis nunc sed id semper. Odio pellentesque diam volutpat commodo sed egestas. Mi sit amet mauris commodo quis. Ullamcorper morbi tincidunt ornare massa. Mi proin sed libero enim sed faucibus turpis. Eu consequat ac felis donec et. Ultricies integer quis auctor elit. Aliquam sem et tortor consequat id porta nibh.
+This is a work in progress, but useful now. This is a methodology for attacking AD, it's broken up into phases that I expect to use different tools or techniques. 
 
 ```js
 let foo = 'bar';

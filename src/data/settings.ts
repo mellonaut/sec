@@ -1,7 +1,7 @@
 export const settings = {
-  site: 'https://simple-blog.littlesticks.dev',
-  name: 'Simple Blog',
-  title: 'Site title',
-  description: 'Site description',
+  site: 'https://sec.straylightsecurity.com',
+  name: 'Sec',
+  title: 'Security Operations',
+  description: 'Cheatsheets and Methodologies',
   showLittleSticksPlug: true,
 }

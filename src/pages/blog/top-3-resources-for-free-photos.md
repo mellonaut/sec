@@ -1,9 +1,10 @@
 ---
 layout: '../../layouts/Post.astro'
-title: Top 3 Resources for Free Photos
-image: /images/photography
-publishedAt: 2021-02-20
-category: 'Resources'
+title: Attacking Hybrid AD Methodology
+# image: https://expandingarctopus.s3.us-east-1.amazonaws.com/kerberos1
+image: '/images/kerberos1'
+publishedAt: 2023-10-1
+category: 'Hybrid'
 ---
 
 ## Heading 2
