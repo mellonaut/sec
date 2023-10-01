@@ -3,5 +3,5 @@ export const settings = {
   name: 'Sec',
   title: 'Security Operations',
   description: 'Cheatsheets and Methodologies',
-  showLittleSticksPlug: true,
+  showLittleSticksPlug: false,
 }
