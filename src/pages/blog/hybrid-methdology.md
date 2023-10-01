@@ -1,6 +1,6 @@
 ---
 layout: '../../layouts/Post.astro'
-title: Attacking Hybrid AD - Methodology
+title: Hybrid AD - Attack Methodology
 # image: https://expandingarctopus.s3.us-east-1.amazonaws.com/kerberos1
 image: '/images/kerberos1'
 publishedAt: 2023-10-1

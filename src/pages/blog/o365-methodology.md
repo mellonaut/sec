@@ -1,6 +1,6 @@
 ---
 layout: '../../layouts/Post.astro'
-title: Attacking O365 - Methodology
+title: O365 - Attack Methodology
 image: '/images/hydra'
 publishedAt: 2022-09-03
 category: 'Cloud'
