@@ -11,11 +11,11 @@ category: 'AD'
 
 This is a work in progress, but useful now. This is a methodology for attacking AD, it's broken up into phases that I expect to use different tools or techniques. 
 
-```js
+<!-- ```js
 let foo = 'bar';
 
 console.log(foo);
-```
+``` -->
 
 <!-- ![image](https://unsplash.it/400/300) -->
 
