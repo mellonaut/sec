@@ -22,13 +22,6 @@ console.log(foo);
 
 
 
-
-
-
-
-
-
-
 ## Phase 1 - No Creds
 
 ## 1a. Network Recon
@@ -580,6 +573,7 @@ crackmapexec smb $ip -d $fqdn -u "$user" -p $password -M webdav
 -M 
 ```
 
+
 #### Bloodhound Integration
 ```bash
 .vim /.cme/cme.conf
@@ -591,6 +585,7 @@ bh_port = 7687
 bh_user = user
 bh_pass = pass
 ```
+
 
 ### Kerberos 
 
