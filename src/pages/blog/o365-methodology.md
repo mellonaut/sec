@@ -2,16 +2,15 @@
 layout: '../../layouts/Post.astro'
 title: O365 - Attack Methodology
 image: '/images/hydra'
-publishedAt: 2022-09-03
+publishedAt: 2023-10-02
 category: 'Cloud'
 ---
 
 ## Office 365 / Graph Methodology
 
-## Main Phishing Methodology using AAdinternals, TokenTactics, Trevorspray/o365spray, MAAD-AF
+## Phishing using AAdinternals, TokenTactics, Trevorspray/o365spray, MAAD-AF
 
 ### Clone and Install Modules
-
 ```powershell
 cd O365
 git clone https://github.com/rvrsh3ll/TokenTactics.git
