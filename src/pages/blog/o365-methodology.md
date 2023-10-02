@@ -7,9 +7,9 @@ category: 'Cloud'
 ---
 
 ### Office 365 / Graph Methodology
-Phishing using AAdinternals, TokenTactics, Azurehound, Trevorspray/o365spray, MAAD-AF. 
+Phishing using AAdinternals, TokenTactics, Azurehound, Trevorspray/o365spray, etc
 
-Needs PhirstPhish stuff to replace the Intitla Phish section, it's lacking
+Needs PhirstPhish stuff to replace the Intital Phish section, it's lacking
 Needs AzureHound stuff
 Needs O365 creeper, Road-Tools, Blobhunter I guess.
 Look at the azure methopdology, a lot of overlap 
