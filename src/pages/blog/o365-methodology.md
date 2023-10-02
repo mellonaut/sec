@@ -6,9 +6,14 @@ publishedAt: 2023-10-02
 category: 'Cloud'
 ---
 
-## Office 365 / Graph Methodology
+### Office 365 / Graph Methodology
 
-## Phishing using AAdinternals, TokenTactics, Trevorspray/o365spray, MAAD-AF
+Phishing using AAdinternals, TokenTactics, Azurehound, Trevorspray/o365spray, MAAD-AF. 
+
+Needs PhirstPhish stuff
+Needs AzureHound
+Needs Teamfiltration
+Needs O365 creeper, Road-Tools, Blobhunter, 
 
 ### Clone and Install Modules
 ```powershell
