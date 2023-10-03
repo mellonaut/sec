@@ -14,15 +14,20 @@ category: 'Hybrid'
 
 #### Ligolo-NG
 Repo: https://github.com/nicocha30/ligolo-ng/
-Guide: https://youtu.be/DM1B8S80EvQ
+Guides: https://youtu.be/DM1B8S80EvQ
+        https://software-sinner.medium.com/how-to-tunnel-and-pivot-networks-using-ligolo-ng-cf828e59e740
 Reqs: Requires Go 1.20
 
 ##### Linux Setup
 ##### Set-Up Tun Interface for Proxy
 ```bash
 user=mellonaut
-# agent
+# linux agent
 wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_agent_0.4.4_linux_amd64.tar.gz && tar -xzvf ligolo-ng_agent_0.4.4_linux_amd64.tar.gz && rm ligolo-ng_agent_0.4.4_linux_amd64.tar.gz
+
+# windows agent
+wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_agent_0.4.4_windows_amd64.zip && unzip ligolo-ng_agent_0.4.4_windows_amd64.zip && rm ligolo-ng_agent_0.4.4_windows_amd64.zip
+
 
 # proxy
 wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_proxy_0.4.4_linux_amd64.tar.gz && tar -xzvf ligolo-ng_proxy_0.4.4_linux_amd64.tar.gz && rm ligolo-ng_proxy_0.4.4_linux_amd64.tar.gz
@@ -39,20 +44,23 @@ sudo ip link set ligolo up
 
 ##### TLS - No LetsEncrypt
 ```bash
-cert=\home\mellonaut\cert.pem
-key=\home\mellonaut\cert.pem
+cert=/home/$user/cert.pem
+key=/home/$user/cert.pem
 
 ./proxy -certfile $cert -keyfile $key
-./proxy -selfcert # must use -ignore-cert on the agent side
+# ./proxy -selfcert # must use -ignore-cert on the agent side
 ```
 
 ##### Windows Setup
-##### Requires Win-Tun .dll from Wireguard project
+##### Proxy Requires Win-Tun .dll from Wireguard project
 ```powershell
 Invoke-WebRequest -Uri https://www.wintun.net/builds/wintun-0.14.1.zip -OutFile wintun-0.14.1.zip; Expand-Archive -Path wintun-0.14.1.zip -DestinationPath .\; Remove-Item wintun-0.14.1.zip
-Invoke-WebRequest -Uri https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_agent_0.4.4_windows_amd64.zip -OutFile ligolo.zip; Expand-Archive -Path ligolo.zip -DestinationPath .\; Remove-Item ligolo.zip
+Invoke-WebRequest -Uri https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_proxy_0.4.4_windows_amd64.zip -OutFile ligolo.zip; Expand-Archive -Path ligolo.zip -DestinationPath .\; Remove-Item ligolo.zip
+Invoke-WebRequest -Uri https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_agent_0.4.4_windows_amd64.zip -OutFile agent.zip; Expand-Archive -Path agent.zip -DestinationPath .\; Remove-Item agent.zip
 Copy-Item -Path .\wintun\bin\amd64\*.dll -Destination .\ligolo\
 ```
+
+
 
 ##### Agent Usage
 ```bash
