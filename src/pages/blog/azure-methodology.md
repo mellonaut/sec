@@ -16,8 +16,8 @@ microburst
 roadrecon 
 
 ### Use OSINT to get the company's tenant
-$tenant="anchorconst.com"
-$base="anchorconst"
+$tenant=""
+$base=""
 
 ### Look for Open blobs from tenant name using bing as well
 $bingKey = ""
