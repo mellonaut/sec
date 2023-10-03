@@ -13,13 +13,20 @@ category: 'Hybrid'
 ### Tools
 
 #### Ligolo-NG
-Requires Go 1.20
+Repo: https://github.com/nicocha30/ligolo-ng/
+Guide: https://youtu.be/DM1B8S80EvQ
+Reqs: Requires Go 1.20
 
 ##### Linux Setup
 ##### Set-Up Tun Interface for Proxy
 ```bash
 user=mellonaut
+# agent
 wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_agent_0.4.4_linux_amd64.tar.gz && tar -xzvf ligolo-ng_agent_0.4.4_linux_amd64.tar.gz && rm ligolo-ng_agent_0.4.4_linux_amd64.tar.gz
+
+# proxy
+wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.4.4/ligolo-ng_proxy_0.4.4_linux_amd64.tar.gz && tar -xzvf ligolo-ng_proxy_0.4.4_linux_amd64.tar.gz && rm ligolo-ng_proxy_0.4.4_linux_amd64.tar.gz
+
 sudo ip tuntap add user $user mode tun ligolo
 sudo ip link set ligolo up
 ```
